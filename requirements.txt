@@ -1,0 +1,12 @@
+black>=22.3.0
+pandas
+langchain
+blosc2~=2.0.0
+cython>=0.29.21
+pyqt5<5.16
+pyqtwebengine<5.16
+pypdf
+sentence-transformers
+faiss-cpu
+chainlit
+llama-cpp-python
