@@ -1,0 +1,51 @@
+version: "3.8"
+
+volumes:
+  chroma-data:
+
+networks:
+  medical-net:
+
+services:
+  db:
+    image: chromadb/chroma:latest
+    container_name: 'chromadb'
+    ports:
+      - 8000:8000
+    environment:
+      ALLOW_RESET: true
+      ANONYMIZE_TELEMETRY: false
+      IS_PERSISTENT: true
+      PERSIST_DIRECTORY: '/chroma/chroma/'
+    volumes:
+      # Default configuration for persist_directory is ./chroma
+      # Currently it's located in "/chroma/chroma/"
+      - chroma-data:/chroma/chroma/
+    networks:
+      - medical-net
+    healthcheck:
+      test: ["CMD", "sleep", "10"] # OR 'timeout 10s bash -c ':> /dev/tcp/127.0.0.1/80' || exit 1'
+      interval: 5s
+      timeout: 10s
+      retries: 3
+
+  medical-bot:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: 'chainlit run bot.py --port 8001 --headless'
+    image: medical_bot:0.x
+    container_name: medical_bot
+    ports:
+      - "8001:8001"
+    environment:
+      RESET_DB: false
+      DB_HOST: 'db'
+    volumes:
+      - ./src:/app/medical_bot
+    networks:
+      - medical-net
+    depends_on:
+      db:
+        condition: service_healthy
+
