@@ -23,6 +23,6 @@ This app is located in the folder `chroma-viewer/` and can be run with the comma
 ![alt text](./images/chroma-viewer.png)
 
 # Medium link
-Find the related Medium article of the repo here -> 
+Find the related Medium article of the repo here -> https://medium.com/@fradin.nicolas/
 
 
