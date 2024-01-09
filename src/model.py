@@ -49,9 +49,7 @@ def set_custom_prompt():
 
 def load_llm():
 
-    #llm1 = Llama(model_path=MODEL_PATH, n_ctx=1024, n_batch=126)
-
-    llm2 = LlamaCpp(
+    llm = LlamaCpp(
         model_path=MODEL_PATH,
         n_gpu_layers=0, # Only one layer of the model will be loaded into GPU memory (1 is often sufficient).
         n_batch=512, # number of tokens the model should process in parallel
@@ -65,7 +63,7 @@ def load_llm():
         echo=True,              # Echo the prompt back in the output
         #stop=["#"],  # Stop generating just before the model would generate a new question
     )
-    return llm2
+    return llm
 
 
 def retrieval_qa_chain(llm, prompt, db):
@@ -83,7 +81,7 @@ def qa_bot():
 
     logging.info('********************************** %s', os.environ['RESET_DB'])
 
-    if os.environ['RESET_DB']:
+    if os.environ['RESET_DB'] == 'true':
         chroma_client.reset()
         embedding_function = embedding_functions.SentenceTransformerEmbeddingFunction(model_name="all-MiniLM-L6-v2", device='cpu')     # We need to use a transformers in the following list https://docs.trychroma.com/embeddings
         vectorize_documents(chroma_client, embedding_function, "data/", 'medical_collection', 'l2')
@@ -99,12 +97,6 @@ def qa_bot():
     qa = retrieval_qa_chain(llm, qa_prompt, db)
 
     return qa
-
-
-def final_result(query):    # Not used
-    qa_result = qa_bot()
-    response = qa_result({'query', query})
-    return response
 
 
 def main():

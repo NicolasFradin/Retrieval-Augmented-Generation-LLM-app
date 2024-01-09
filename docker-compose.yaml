@@ -13,7 +13,7 @@ services:
     ports:
       - 8000:8000
     environment:
-      ALLOW_RESET: true
+      ALLOW_RESET: false
       ANONYMIZE_TELEMETRY: false
       IS_PERSISTENT: true
       PERSIST_DIRECTORY: '/chroma/chroma/'
